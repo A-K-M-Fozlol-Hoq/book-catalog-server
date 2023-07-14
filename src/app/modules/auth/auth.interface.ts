@@ -3,6 +3,12 @@ export type ILoginUser = {
   password: string;
 };
 
+export type ISignupUserResponse = {
+  accessToken?: string;
+  password?: string;
+  email?: string;
+};
+
 export type ILoginUserResponse = {
   accessToken: string;
   refreshToken?: string;

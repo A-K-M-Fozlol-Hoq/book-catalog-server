@@ -5,16 +5,25 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
-import { ILoginUser, ILoginUserResponse } from './auth.interface';
+import {
+  ILoginUser,
+  ILoginUserResponse,
+  ISignupUserResponse,
+} from './auth.interface';
 
-const signup = async (payload: IUser): Promise<IUser | null> => {
+const signup = async (payload: IUser): Promise<ISignupUserResponse | null> => {
   const result = await User.create(payload);
   let newUserData = null;
   if (result) {
     newUserData = await User.findById(result._id);
   }
+  const accessToken = jwtHelpers.createToken(
+    { email: payload.email },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
 
-  return newUserData;
+  return { ...newUserData, accessToken };
 };
 
 const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
