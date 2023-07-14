@@ -6,7 +6,7 @@ import { IUser } from './user.interface';
 import { UserService } from './user.service';
 
 const getMyprofile = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getMyprofile(req.user?.userPhoneNumber);
+  const result = await UserService.getMyprofile(req.user?.userEmail);
 
   sendResponse<IUser>(res, {
     statusCode: httpStatus.OK,

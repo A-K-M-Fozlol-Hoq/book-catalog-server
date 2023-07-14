@@ -6,7 +6,7 @@ export type IUser = {
 };
 
 export type UserModel = {
-  isUserExist(phoneNumber: string): Promise<Pick<IUser, 'email' | 'password'>>;
+  isUserExist(email: string): Promise<Pick<IUser, 'email' | 'password'>>;
   isPasswordMatched(
     givenPassword: string,
     savedPassword: string

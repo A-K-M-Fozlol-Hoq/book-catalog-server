@@ -1,9 +1,9 @@
 import { IUser } from './user.interface';
 import { User } from './user.model';
 
-const getMyprofile = async (userPhoneNumber: string): Promise<IUser | null> => {
+const getMyprofile = async (userEmail: string): Promise<IUser | null> => {
   const user = await User.findOne({
-    phoneNumber: userPhoneNumber,
+    email: userEmail,
   });
   const _id = user?._id;
 

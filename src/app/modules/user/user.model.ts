@@ -25,7 +25,7 @@ const userSchema = new Schema<IUser, UserModel>(
   }
 );
 
-// Add the unique index for the phoneNumber field
+// Add the unique index for the email field
 userSchema.index({ email: 1 }, { unique: true });
 
 userSchema.statics.isUserExist = async function (
