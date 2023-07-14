@@ -12,6 +12,8 @@ export type ISignupUserResponse = {
 export type ILoginUserResponse = {
   accessToken: string;
   refreshToken?: string;
+  password?: string;
+  email?: string;
 };
 
 export type IRefreshTokenResponse = {
