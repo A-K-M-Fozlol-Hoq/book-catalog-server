@@ -1,4 +1,5 @@
-import { SortOrder } from 'mongoose';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -11,8 +12,9 @@ const getAllBooks = async (
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IBook[]>> => {
   const { searchTerm, ...filtersData } = filters;
-  const { page, limit, skip, sortBy, sortOrder } =
+  const { page, limit, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
+  console.log({ searchTerm, filtersData, page, limit, skip });
 
   const andConditions = [];
 
@@ -34,19 +36,10 @@ const getAllBooks = async (
       })),
     });
   }
-
-  const sortConditions: { [key: string]: SortOrder } = {};
-
-  if (sortBy && sortOrder) {
-    sortConditions[sortBy] = sortOrder;
-  }
   const whereConditions =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
-  const result = await Book.find(whereConditions)
-    .sort(sortConditions)
-    .skip(skip)
-    .limit(limit);
+  const result = await Book.find(whereConditions).skip(skip).limit(limit);
 
   const total = await Book.countDocuments(whereConditions);
 
@@ -85,10 +78,31 @@ const deletBook = async (id: string): Promise<IBook | null> => {
   return result;
 };
 
+const addReview = async (bookId: string, review: string) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(
+      bookId,
+      {
+        $push: { reviews: review },
+      },
+      { new: true }
+    );
+
+    return updatedBook;
+  } catch (error) {
+    console.error('Error adding review:', error);
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Error adding review:'
+    );
+  }
+};
+
 export const BookService = {
   getAllBooks,
   getSingleBook,
   updateBook,
   deletBook,
   createBook,
+  addReview,
 };

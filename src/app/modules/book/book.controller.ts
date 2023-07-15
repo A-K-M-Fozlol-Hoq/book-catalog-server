@@ -71,10 +71,34 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const addReview = catchAsync(async (req: Request, res: Response) => {
+  const { book_id, review } = req.body;
+  console.log(book_id, review);
+
+  try {
+    const updatedBook = await BookService.addReview(book_id, review);
+
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Review added to the book successfully',
+      data: updatedBook,
+    });
+  } catch (error) {
+    sendResponse<IBook>(res, {
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      success: false,
+      message: 'Failed to add review to the book',
+      data: null,
+    });
+  }
+});
+
 export const BookController = {
   getAllBooks,
   getSingleBook,
   updateBook,
   deleteBook,
   createBook,
+  addReview,
 };

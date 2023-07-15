@@ -12,9 +12,9 @@ router.post(
   BookController.createBook
 );
 
-router.get('/', auth(), BookController.getAllBooks);
+router.get('/', BookController.getAllBooks);
 
-router.get('/:id', auth(), BookController.getSingleBook);
+router.get('/:id', BookController.getSingleBook);
 
 router.patch(
   '/:id',
@@ -23,6 +23,8 @@ router.patch(
   // checkOwnership as RequestHandler,
   BookController.updateBook
 );
+
+router.patch('/', BookController.addReview);
 
 router.delete(
   '/:id',

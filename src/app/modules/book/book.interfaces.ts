@@ -5,9 +5,7 @@ export type IBook = {
   genre: string;
   publicationDate: string;
   publicationYear: number;
-  reviews: {
-    comment: string;
-  }[];
+  reviews: string[];
 };
 export const bookFilterableFields: string[] = [
   'searchTerm',
