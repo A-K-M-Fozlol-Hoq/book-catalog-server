@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { SortOrder } from 'mongoose';
 import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
@@ -12,7 +13,7 @@ const getAllBooks = async (
   paginationOptions: IPaginationOptions
 ): Promise<IGenericResponse<IBook[]>> => {
   const { searchTerm, ...filtersData } = filters;
-  const { page, limit, skip } =
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(paginationOptions);
   console.log({ searchTerm, filtersData, page, limit, skip });
 
@@ -36,10 +37,21 @@ const getAllBooks = async (
       })),
     });
   }
+
+  const sortConditions: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+    console.log({ sortConditions, skip, limit });
+  }
+
   const whereConditions =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
-  const result = await Book.find(whereConditions).skip(skip).limit(limit);
+  const result = await Book.find(whereConditions)
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit);
 
   const total = await Book.countDocuments(whereConditions);
 
